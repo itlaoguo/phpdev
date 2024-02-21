@@ -19,6 +19,9 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install bcmath \
     && docker-php-ext-install -j$(nproc) ffi
 
+RUN pecl install xdebug-2.9.8 \
+    && docker-php-ext-enable xdebug
+
 ENV COMPOSER_HOME /root/composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 ENV PATH $COMPOSER_HOME/vendor/bin:$PATH

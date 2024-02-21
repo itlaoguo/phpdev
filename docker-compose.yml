@@ -8,6 +8,7 @@ services:
 ### NGINX Server #########################################
     nginx:
       image: nginx:alpine
+      privileged: true
       volumes:
         - ./sites:/usr/share/nginx/html
         - ./nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -43,6 +44,8 @@ services:
         - ./php/php74/etc/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
       networks:
         - backend
+      links:
+        - "mysql_57"
       environment:
         TZ: Asia/Shanghai
     php80:
@@ -57,6 +60,8 @@ services:
         - ./php/php80/etc/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
       networks:
         - backend
+      links:
+        - "mysql_57"
       environment:
         TZ: Asia/Shanghai
     php81:
@@ -71,6 +76,8 @@ services:
         - ./php/php81/etc/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
       networks:
         - backend
+      links:
+        - "mysql_57"
       environment:
         TZ: Asia/Shanghai
     php82:
@@ -85,10 +92,29 @@ services:
         - ./php/php82/etc/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
       networks:
         - backend
+      links:
+        - "mysql_57"
       environment:
         TZ: Asia/Shanghai
 
-
+    mysql_57:
+        image: mysql:5.7.44
+        restart: always
+        privileged: true
+        tty: true
+        container_name: mysql57
+        ports:
+          - '3306:3306'
+        volumes:
+          - ./mysql/mysql57/etc/my.cnf:/etc/my.cnf
+          # mount your MySQL 5.7 data directory
+          - ./mysql/mysql57/data:/var/lib/mysql
+        networks:
+          - frontend
+          - backend
+        environment:
+          MYSQL_ROOT_PASSWORD: root
+        command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
 ### MySQL ################################################
     # mysql:
